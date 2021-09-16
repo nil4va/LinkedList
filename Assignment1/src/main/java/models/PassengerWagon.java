@@ -1,14 +1,19 @@
 package models;
-// TODO
-public class PassengerWagon {
+
+public class PassengerWagon extends Wagon {
+
+    private int numberOfSeats;
 
     public PassengerWagon(int wagonId, int numberOfSeats) {
-        // TODO
+        super(wagonId);
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
     }
 
     public int getNumberOfSeats() {
-        // TODO
-
-        return 0;
+        return this.numberOfSeats;
     }
 }

@@ -298,21 +298,12 @@ public class Train {
      * (No change if the train has no wagons or only one wagon)
      */
     public void reverse() {
-        // TODO
+        if (getNumberOfWagons() <= 1) {
+            return;
+        }
 
+        this.firstWagon.reverseSequence();
     }
 
     // TODO
-
-    public boolean attachToRear(PassengerWagon wagon) {
-        this.getLastWagonAttached().attachTail(wagon);
-        return true;
-    }
-
-    public boolean attachToRear(FreightWagon wagon) {
-        return false;
-    }
-    public boolean insertAtFront(FreightWagon wagon) {
-        return false;
-    }
 }

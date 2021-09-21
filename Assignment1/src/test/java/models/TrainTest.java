@@ -112,7 +112,6 @@ public class TrainTest {
         // check final wagon
         assertEquals( 40, ((PassengerWagon) passengerTrain.getLastWagonAttached()).getNumberOfSeats());
         assertEquals( 30000, ((FreightWagon) freightTrain.getLastWagonAttached()).getMaxWeight());
-        System.out.println(passengerTrain);
 
         // check toString
         assertTrue(freightTrain.toString().indexOf(" from Amsterdam to Berlin") > 0);

@@ -43,9 +43,8 @@ public abstract class Wagon {
             return this;
         }
 
-        // TODO: Validate if this even works, did not test any of it D:
         Wagon nextWagon = this.nextWagon;
-        while (this.hasNextWagon()) {
+        while (nextWagon.hasNextWagon()) {
             nextWagon = nextWagon.nextWagon;
         }
 
@@ -57,14 +56,18 @@ public abstract class Wagon {
      * excluding this wagon itself.
      */
     public int getTailLength() {
-        // TODO traverse the tail and find its length
-
-        Wagon nextWagon = this.nextWagon;
-        while (this.hasNextWagon()) {
-            nextWagon = nextWagon.nextWagon;
+        Wagon currentSelected = this.nextWagon;
+        if (currentSelected == null) {
+            return 0;
         }
 
-        return 0;
+        int length = 1;
+        while (currentSelected.hasNextWagon()) {
+            currentSelected = currentSelected.nextWagon;
+            length++;
+        }
+
+        return length;
     }
 
     /**
@@ -75,16 +78,12 @@ public abstract class Wagon {
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
      */
     public void attachTail(Wagon tail) {
-        if (tail.hasNextWagon() || tail.hasPreviousWagon()) {
-            throw new IllegalStateException("The wagon has at least one wagon attached.");
+        if (tail.hasPreviousWagon() || hasNextWagon()) {
+            throw new IllegalStateException("The is already connected to: " + tail.getPreviousWagon() + getNextWagon());
         }
 
-        if (!this.hasNextWagon()) {
-            this.nextWagon = tail;
-            return;
-        }
-
-        this.getLastWagonAttached().attachTail(tail);
+        tail.previousWagon = this;
+        this.nextWagon = tail;
     }
 
     /**
@@ -98,7 +97,8 @@ public abstract class Wagon {
         }
 
         Wagon tail = this.nextWagon;
-        this.nextWagon = null;
+        tail.setPreviousWagon(null);
+        setNextWagon(null);
 
         return tail;
     }
@@ -115,23 +115,25 @@ public abstract class Wagon {
         }
 
         Wagon front = this.previousWagon;
-        this.previousWagon = null;
+        setPreviousWagon(null);
+        front.setNextWagon(null);
 
         return front;
     }
 
     /**
-     * Replaces the tail of the <code>front</code> wagon by this wagon
+     * Replaces the tail of the front wagon with this wagon
      * Before such reconfiguration can be made,
      * the method first disconnects this wagon form its predecessor,
      * and the <code>front</code> wagon from its current tail.
      * @param front the wagon to which this wagon must be attached to.
      */
     public void reAttachTo(Wagon front) {
-        this.setPreviousWagon(null);
-        this.setNextWagon(null);
-
+        if (hasPreviousWagon()) {
+            getPreviousWagon().setNextWagon(null);
+        }
         front.setNextWagon(this);
+        setPreviousWagon(front);
     }
 
     /**
@@ -142,8 +144,12 @@ public abstract class Wagon {
         Wagon front = this.previousWagon;
         Wagon tail = this.nextWagon;
 
-        front.setNextWagon(tail);
-        tail.setPreviousWagon(front);
+        if (front != null) {
+            front.setNextWagon(tail);
+        }
+        if (tail != null) {
+            tail.setPreviousWagon(front);
+        }
 
         this.setNextWagon(null);
         this.setPreviousWagon(null);
@@ -156,15 +162,25 @@ public abstract class Wagon {
      * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
      */
     public Wagon reverseSequence() {
+        Wagon previousWagon = this.getPreviousWagon();
         Wagon nextWagon = this.nextWagon;
+
         if (nextWagon == null) {
+            setNextWagon(null);
             return this;
         }
+        Wagon frontWagon = nextWagon.reverseSequence();
+        setNextWagon(null);
+        setPreviousWagon(null);
+        reAttachTo(nextWagon);
 
-        Wagon front = nextWagon.reverseSequence();
-        this.reAttachTo(front);
+        if (previousWagon != null) {
+            previousWagon.setNextWagon(frontWagon);
+        }
 
-        return front;
+        frontWagon.setPreviousWagon(previousWagon);
+
+        return frontWagon;
     }
 
     public void setId(int id) {
@@ -177,5 +193,10 @@ public abstract class Wagon {
 
     public void setPreviousWagon(Wagon previousWagon) {
         this.previousWagon = previousWagon;
+    }
+
+    @Override
+    public String toString() {
+        return "[Wagon-" + this.getId() + "]";
     }
 }

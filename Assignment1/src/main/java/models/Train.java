@@ -275,7 +275,6 @@ public class Train {
         Wagon lastWagonOfInserted = wagon.getLastWagonAttached();
         lastWagonOfInserted.setNextWagon(currentWagon);
 
-        System.out.println("hoi");
         currentWagon.getPreviousWagon().setNextWagon(wagon);
         currentWagon.setPreviousWagon(wagon);
         return true;

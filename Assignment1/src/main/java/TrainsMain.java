@@ -1,7 +1,4 @@
-import models.FreightWagon;
-import models.Locomotive;
-import models.PassengerWagon;
-import models.Train;
+import models.*;
 
 public class TrainsMain {
 

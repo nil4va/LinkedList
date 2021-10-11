@@ -78,12 +78,15 @@ public abstract class Wagon {
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
      */
     public void attachTail(Wagon tail) {
-        if (tail.hasPreviousWagon() || hasNextWagon()) {
-            throw new IllegalStateException("The is already connected to: " + tail.getPreviousWagon() + getNextWagon());
+        if (hasNextWagon()) {
+            throw new IllegalStateException("Wagon " + this + " already has wagon " + getNextWagon() + " appended to it so " + tail + " cannot be appended.");
+        }
+        if (tail.hasPreviousWagon()) {
+            throw new IllegalStateException("Wagon " + this + " already has wagon " + tail.getPreviousWagon() + " in front of it so " + tail + " cannot be appended.");
         }
 
-        tail.previousWagon = this;
-        this.nextWagon = tail;
+        tail.setPreviousWagon(this);
+        this.setNextWagon(tail);
     }
 
     /**
@@ -131,6 +134,9 @@ public abstract class Wagon {
     public void reAttachTo(Wagon front) {
         if (hasPreviousWagon()) {
             getPreviousWagon().setNextWagon(null);
+        }
+        if (hasNextWagon()) {
+            getNextWagon().setPreviousWagon(null);
         }
         front.setNextWagon(this);
         setPreviousWagon(front);

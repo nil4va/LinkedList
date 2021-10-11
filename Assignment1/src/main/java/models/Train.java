@@ -202,15 +202,21 @@ public class Train {
      * Tries to attach the given sequence of wagons to the rear of the train
      * No change is made if the attachment cannot be made.
      * (when the sequence is not compatible or the engine has insufficient capacity)
+     * if attachment is possible, the head wagon is first detached from its predecessors
      * @param wagon  the first wagon of a sequence of wagons to be attached
      * @return  whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
         if (canAttach(wagon)) {
             if (firstWagon == null) {
+                if (wagon.hasPreviousWagon()) {
+                    wagon.getPreviousWagon().setNextWagon(null);
+                    wagon.setPreviousWagon(null);
+                }
                 firstWagon = wagon;
                 return true;
             }
+
             getLastWagonAttached().attachTail(wagon);
             return true;
         }
@@ -266,6 +272,10 @@ public class Train {
             return false;
         }
 
+        Wagon lastWagonOfInserted = wagon.getLastWagonAttached();
+        lastWagonOfInserted.setNextWagon(currentWagon);
+
+        System.out.println("hoi");
         currentWagon.getPreviousWagon().setNextWagon(wagon);
         currentWagon.setPreviousWagon(wagon);
         return true;

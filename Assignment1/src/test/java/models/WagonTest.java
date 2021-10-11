@@ -91,7 +91,9 @@ public class WagonTest {
         );
         assertTrue(t.getMessage().contains(passengerWagon1.toString()),
                 "Exception message should include the names of connected wagons");
-        assertFalse(t.getMessage().contains(passengerWagon2.toString()), // Updated, as this exception should not be shown.
+
+        System.out.println(t.getMessage());
+        assertTrue(t.getMessage().contains(passengerWagon2.toString()),
                 "Exception message should include the names of connected wagons");
     }
 

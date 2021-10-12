@@ -1,5 +1,7 @@
 package models;
 
+import java.util.regex.Pattern;
+
 public class Product {
     private final long barcode;
     private String title;
@@ -21,11 +23,18 @@ public class Product {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
-        Product newProduct = null;
+        boolean textLineRegex = Pattern.matches("([0-9]{13}|[0-9]{8})[,]\\s.+[,]\\s[0-9]+.[0-9]{2}", textLine);
 
-        // TODO convert the information in line to a new Product instance
+        if (!textLineRegex) {
+            return null;
+        }
 
-        return newProduct;
+        String[] parts = textLine.split(",");
+        String barcode = parts[0];
+        String title = parts[1];
+        String price = parts[2];
+
+        return new Product(Long.parseLong(barcode), title, Double.parseDouble(price));
     }
 
     public long getBarcode() {
@@ -49,6 +58,11 @@ public class Product {
         if (this == other) return true;
         if (!(other instanceof Product)) return false;
         return this.getBarcode() == ((Product)other).getBarcode();
+    }
+
+    @Override
+    public String toString() {
+        return barcode + ", " + title + ", " + price ;
     }
 
     // TODO add public and private methods as per your requirements

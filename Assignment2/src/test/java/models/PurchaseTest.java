@@ -1,5 +1,7 @@
 package models;
 
+import models.Product;
+import models.Purchase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

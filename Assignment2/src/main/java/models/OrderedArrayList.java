@@ -48,6 +48,21 @@ public class OrderedArrayList<E>
 
 
     @Override
+    public void add(int index, E element) {
+        super.add(index, element);
+    }
+
+    @Override
+    public E remove(int index) {
+        return super.remove(index);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return super.remove(o);
+    }
+
+    @Override
     public void sort() {
         if (this.nSorted < this.size()) {
             this.sort(this.ordening);

@@ -1,5 +1,9 @@
 package models;
 
+import models.OrderedArrayList;
+import models.OrderedList;
+import models.Product;
+import models.PurchaseTracker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

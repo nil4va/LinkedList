@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Purchase {
     private final Product product;
@@ -20,12 +21,28 @@ public class Purchase {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Purchase fromLine(String textLine, List<Product> products) {
-        Purchase newPurchase = null;
 
         // TODO convert the information in the textLine to a new Purchase instance
         //  use the products.indexOf to find the product that is associated with the barcode of the purchase
+        boolean textLineRegex = Pattern.matches("([0-9]{13}|[0-9]{8})[,][0-9]+", textLine);
 
-        return newPurchase;
+        if (!textLineRegex) {
+            return null;
+        }
+
+        String[] parts = textLine.split(",");
+        long barcode = Long.parseLong(parts[0]);
+        String amount = parts[2];
+
+        Product product = null;
+
+        for (int i = 0; i < products.size(); i++) {
+            if (i == products.indexOf(barcode)){
+                product = new Product(barcode);
+            }
+        }
+
+        return new Purchase(product, Integer.parseInt(amount));
     }
 
     /**
@@ -39,14 +56,22 @@ public class Purchase {
     public long getBarcode() {
         return this.product.getBarcode();
     }
+
     public int getCount() {
         return count;
     }
+
     public void setCount(int count) {
         this.count = count;
     }
+
     public Product getProduct() {
         return product;
+    }
+
+    @Override
+    public String toString() {
+        return product + ", " + count;
     }
 
     // TODO add public and private methods as per your requirements

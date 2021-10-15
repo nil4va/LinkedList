@@ -66,7 +66,7 @@ public class PurchaseTracker {
             // TODO merge all purchases of all files and sub folders from the filesInDirectory list, recursively.
 
             for (File fileInDirectory : filesInDirectory) {
-                mergePurchasesFromFile(fileInDirectory.getAbsolutePath());
+                mergePurchasesFromFileRecursively(fileInDirectory.getAbsolutePath());
             }
 
         } else if (file.getName().matches(PURCHASE_FILE_PATTERN)) {
@@ -106,10 +106,10 @@ public class PurchaseTracker {
 
         System.out.printf("Total volume of all purchases: %.0f\n",
 
-                null);
+                purchases.aggregate(Purchase::getCount));
         System.out.printf("Total revenue from all purchases: %.2f\n",
 
-                null);
+                purchases.aggregate(Purchase -> Purchase.getCount() * Purchase.getProduct().getPrice()));
     }
 
     /**
@@ -133,11 +133,14 @@ public class PurchaseTracker {
 
             // TODO convert the line to an instance of E
 
+            E itemInstance = converter.apply(line);
 
             // TODO add the item to the list of items
 
+            items.add(itemInstance);
+
         }
-        //System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
+        System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
     }
 
     /**
@@ -156,18 +159,19 @@ public class PurchaseTracker {
 
         // TODO import all purchases from the specified file into the newPurchases list
         importItemsFromFile(newPurchases, filePath,
-                null
+                convert -> Purchase.fromLine(convert, products)
         );
 
         // TODO merge all purchases from the newPurchases list into this.purchases
         for (Purchase purchase : newPurchases) {
             this.purchases.merge(purchase,
-                    null
+                    (purchase1, purchase2) -> new Purchase(purchase1.getProduct(),
+                            (purchase1.getCount() + purchase2.getCount()))
             );
         }
 
         int addedCount = purchases.size() - originalNumPurchases;
-        //System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
+        System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
     }
 
     /**

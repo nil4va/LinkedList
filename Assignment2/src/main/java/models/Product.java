@@ -23,16 +23,16 @@ public class Product {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
-        boolean textLineRegex = Pattern.matches("([0-9]{13}|[0-9]{8})[,]\\s.+[,]\\s[0-9]+.[0-9]{2}", textLine);
-
-        if (!textLineRegex) {
-            return null;
-        }
 
         String[] parts = textLine.split(",");
         String barcode = parts[0];
         String title = parts[1];
         String price = parts[2];
+
+        if (barcode != null && title != null && price != null) {
+            Long.parseLong(barcode);
+            Double.parseDouble(price);
+        } else return null;
 
         return new Product(Long.parseLong(barcode), title, Double.parseDouble(price));
     }

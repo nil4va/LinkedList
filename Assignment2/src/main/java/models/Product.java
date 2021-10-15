@@ -62,7 +62,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return barcode + ", " + title + ", " + price ;
+        return barcode + "/" + title + "/" + price ;
     }
 
     // TODO add public and private methods as per your requirements

@@ -2,10 +2,7 @@ package models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Function;
 
 public class PurchaseTracker {
@@ -17,6 +14,9 @@ public class PurchaseTracker {
     public PurchaseTracker() {
         // TODO initialize products and purchases with an empty ordered list which sorts items by barcode.
         //  Use your generic implementation class OrderedArrayList
+
+        products = new OrderedArrayList<>(Comparator.comparing(Product::getBarcode));
+        purchases = new OrderedArrayList<>(Comparator.comparing(Purchase::getBarcode));
     }
 
     /**
@@ -65,6 +65,9 @@ public class PurchaseTracker {
 
             // TODO merge all purchases of all files and sub folders from the filesInDirectory list, recursively.
 
+            for (File fileInDirectory : filesInDirectory) {
+                mergePurchasesFromFile(fileInDirectory.getAbsolutePath());
+            }
 
         } else if (file.getName().matches(PURCHASE_FILE_PATTERN)) {
             // the file is a regular file that matches the target pattern for raw purchase files
@@ -99,6 +102,8 @@ public class PurchaseTracker {
      */
     public void showTotals() {
         // TODO provide the mappers to calculate the specified aggregated quantities
+
+
         System.out.printf("Total volume of all purchases: %.0f\n",
 
                 null);

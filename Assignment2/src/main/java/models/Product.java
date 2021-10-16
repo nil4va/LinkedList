@@ -24,17 +24,16 @@ public class Product {
      */
     public static Product fromLine(String textLine) {
 
-        String[] parts = textLine.split(",");
-        String barcode = parts[0];
+        String[] parts = textLine.split(", ");
+        long barcode = Long.parseLong(parts[0]);
         String title = parts[1];
-        String price = parts[2];
+        double price = Double.parseDouble(parts[2]);
 
-        if (barcode != null && title != null && price != null) {
-            Long.parseLong(barcode);
-            Double.parseDouble(price);
-        } else return null;
+//        if (barcode != null && title != null && price != null) {
+//            // TODO validation parts to see if textLine is corrupt or incomplete
+//        } else return null;
 
-        return new Product(Long.parseLong(barcode), title, Double.parseDouble(price));
+        return new Product(barcode, title, price);
     }
 
     public long getBarcode() {

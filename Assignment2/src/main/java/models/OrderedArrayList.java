@@ -112,9 +112,9 @@ public class OrderedArrayList<E>
             int midIndex = (from + to) / 2;
             nSorted++;
 
-            if (this.ordening.compare(this.get(midIndex), searchItem) < 0) {
+            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
                 to = midIndex - 1;
-            } else if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
+            } else if (this.ordening.compare(searchItem, this.get(midIndex)) < 0) {
                 from = midIndex + 1;
             } else
                 return midIndex;
@@ -155,10 +155,10 @@ public class OrderedArrayList<E>
             int midIndex = (from + to) / 2;
             nSorted++;
 
-            if (this.ordening.compare(this.get(midIndex), searchItem) < 0) {
+            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
                 to = midIndex - 1;
                 return recursiveIndexOf(searchItem, from, to);
-            } else if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
+            } else if (this.ordening.compare(searchItem, this.get(midIndex)) < 0) {
                 from = midIndex + 1;
                 return recursiveIndexOf(searchItem, from, to);
             } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {
@@ -196,7 +196,7 @@ public class OrderedArrayList<E>
             // TODO retrieve the matched item and
             //  replace the matched item in the list with the merger of the matched item and the newItem
 
-            merger.apply(super.get(matchedItemIndex), newItem);
+            merger.apply(this.get(matchedItemIndex), newItem);
             return true;
         }
     }

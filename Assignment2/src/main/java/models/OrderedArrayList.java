@@ -158,7 +158,7 @@ public class OrderedArrayList<E>
             if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
                 to = midIndex - 1;
                 return recursiveIndexOf(searchItem, from, to);
-            } else if (this.ordening.compare(searchItem, this.get(midIndex)) < 0) {
+            } else if (this.ordening.compare(searchItem, this.get(midIndex)) > 0) {
                 from = midIndex + 1;
                 return recursiveIndexOf(searchItem, from, to);
             } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {

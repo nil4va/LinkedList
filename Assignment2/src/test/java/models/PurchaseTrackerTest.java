@@ -16,7 +16,6 @@ public class PurchaseTrackerTest {
         purchaseTracker = new PurchaseTracker();
 
         purchaseTracker.importProductsFromVault("/products.txt");
-
         purchaseTracker.importPurchasesFromVault("/purchases");
     }
 

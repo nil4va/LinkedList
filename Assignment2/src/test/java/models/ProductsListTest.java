@@ -1,9 +1,5 @@
 package models;
 
-import models.OrderedArrayList;
-import models.OrderedList;
-import models.Product;
-import models.PurchaseTracker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +25,6 @@ public class ProductsListTest {
         product2a = new Product(222222222222222L, "", 0.0);
         product3a = new Product(333333333333334L, "geraspte wortelen", 1.00);
         product3b = new Product(333333333333335L, "snoeptomaatjes", 2.50);
-
     }
 
     @Test

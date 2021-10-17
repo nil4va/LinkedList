@@ -1,7 +1,5 @@
 package models;
 
-import java.util.regex.Pattern;
-
 public class Product {
     private final long barcode;
     private String title;

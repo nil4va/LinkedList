@@ -1,7 +1,5 @@
 package models;
 
-import models.Product;
-import models.Purchase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +18,8 @@ public class PurchaseTest {
         stroopwafels = new Product(111111111111111L, "Stroopwafels 10st", 1.23);
         marsbar = new Product(222222222222222L, "Mars bar", 0.86);
         snickers = new Product(333333333333333L, "Snickers", 0.97);
-        products = List.of(stroopwafels,marsbar,snickers);
+        products = List.of(stroopwafels, marsbar, snickers);
     }
-
-
 
     @Test
     public void canConvertATextLineToAPurchase() {

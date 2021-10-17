@@ -1,6 +1,5 @@
 package models;
 
-import models.Product;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +12,6 @@ public class ProductTest {
     private void setup() {
         stroopwafels = new Product(111111111111111L, "Stroopwafels 10st", 1.23);
     }
-
 
     @Test
     public void aProductHasAStringRepresentation() {

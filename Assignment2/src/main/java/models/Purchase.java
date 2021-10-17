@@ -31,15 +31,14 @@ public class Purchase {
 
         // TODO validation parts to see if textLine is corrupt or incomplete
 
-        Product product = null;
-
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getBarcode() == barcode) {
-                product = products.get(i);
+        Product foundProduct = null;
+        for (Product product : products) {
+            if (product.getBarcode() == barcode) {
+                foundProduct = product;
             }
         }
 
-        return new Purchase(product, amount);
+        return new Purchase(foundProduct, amount);
     }
 
     /**
@@ -69,7 +68,7 @@ public class Purchase {
 
     @Override
     public String toString() {
-        return product + "/" + count;
+        return product.getBarcode() + "/" + product.getTitle() + "/" + count + "/" + String.format("%.2f", count * product.getPrice());
     }
 
     // TODO add public and private methods as per your requirements

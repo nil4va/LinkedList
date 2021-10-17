@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.ListIterator;
 import java.util.function.BinaryOperator;
 
 public class OrderedArrayList<E>
@@ -46,20 +47,60 @@ public class OrderedArrayList<E>
     //  such that they sustain the representation invariant of OrderedArrayList
     //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
 
+    @Override
+    public boolean add(E element) {
+        super.add(element);
+        return true;
+    }
 
     @Override
     public void add(int index, E element) {
+        int newNSorted = getNewNSortedForAdd(index, element);
         super.add(index, element);
+        this.nSorted = newNSorted;
+    }
+
+    private int getNewNSortedForAdd(int index, E object){
+        if (this.isEmpty()) {
+            // If there is nothing yet, it's sorted by default.
+            return 1;
+        }
+
+        if (this.ordening.compare(object, this.get(this.size() - 1)) >= 0) {
+            // Adding object to the front and its smaller or equaled to the first element.
+            return this.nSorted + 1;
+        }
+
+        if (this.ordening.compare(object, this.get(index - 1)) >= 0) {
+            // The object is inserted into the sorted part of the list.
+            // Return the current sorted amount plus one.
+            return this.nSorted + 1;
+        }
+
+        if (this.ordening.compare(object, this.get(index - 1)) < 0) {
+            // The object is inserted at the sorted part, and the new object is smaller than the object before it.
+            // So everything before this item is sorted.
+            return index;
+        }
+
+        return this.nSorted;
     }
 
     @Override
     public E remove(int index) {
-        return super.remove(index);
+        E removedElement = super.remove(index);
+        this.nSorted--;
+        return removedElement;
     }
 
     @Override
-    public boolean remove(Object o) {
-        return super.remove(o);
+    public boolean remove(Object object) {
+        boolean removed = super.remove(object);
+        if (!removed) {
+            return false;
+        }
+        this.nSorted--;
+        return true;
     }
 
     @Override
@@ -103,29 +144,23 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-
         int from = 0;
         int to = this.size() - 1;
 
         while (from <= to) {
-            int midIndex = (from + to) / 2;
-            nSorted++;
+            int midIndex = from + (to - from) / 2;
+            int compareResult = this.ordening.compare(searchItem, this.get(midIndex));
 
-            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
+            if (compareResult < 0) {
                 to = midIndex - 1;
-            } else if (this.ordening.compare(searchItem, this.get(midIndex)) < 0) {
+            } else if (compareResult > 0) {
                 from = midIndex + 1;
-            } else
+            } else {
                 return midIndex;
-
-            for (int i = 0; i < this.size(); i++) {
-                if (this.get(i) == searchItem) return i;
             }
         }
-        return -1;
+        return linearSearch(searchItem);
     }
-
 
     /**
      * finds the position of the searchItem by a recursive binary search algorithm in the
@@ -142,34 +177,38 @@ public class OrderedArrayList<E>
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        int from = 0;
-        int to = this.size() - 1;
-
-        if (from > to) return -1;
-
-        return recursiveIndexOf(searchItem, from, to);
+        int index = recursiveIndexOf(searchItem, 0, this.nSorted - 1);
+        if (index != -1) {
+            return index;
+        }
+        return linearSearch(searchItem);
     }
 
-    public int recursiveIndexOf(E searchItem, int from, int to) {
-        do {
-            int midIndex = (from + to) / 2;
-            nSorted++;
-
-            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
-                to = midIndex - 1;
-                return recursiveIndexOf(searchItem, from, to);
-            } else if (this.ordening.compare(searchItem, this.get(midIndex)) > 0) {
-                from = midIndex + 1;
-                return recursiveIndexOf(searchItem, from, to);
-            } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {
-                return midIndex;
-            }
-
-            for (int i = 0; i < this.size(); i++) {
-                if (this.get(i) == searchItem) return i;
-            }
+    private int recursiveIndexOf(E searchItem, int low, int high) {
+        if (low > high) {
             return -1;
-        } while (from <= to);
+        }
+
+        int mid = low + (high - low) / 2;
+        int comparatorResult = this.ordening.compare(searchItem, this.get(mid));
+        if (comparatorResult < 0) {
+            return recursiveIndexOf(searchItem, low, mid - 1);
+        } else if (comparatorResult > 0) {
+            return recursiveIndexOf(searchItem, mid + 1, high);
+        } else {
+            return mid;
+        }
+    }
+
+    private int linearSearch(E searchItem) {
+        ListIterator<E> iterator = this.listIterator(nSorted);
+        while(iterator.hasNext()) {
+            if (this.ordening.compare(iterator.next(), searchItem) == 0) {
+                return iterator.previousIndex();
+            }
+        }
+
+        return -1;
     }
 
     /**
@@ -186,18 +225,19 @@ public class OrderedArrayList<E>
      */
     @Override
     public boolean merge(E newItem, BinaryOperator<E> merger) {
-        if (newItem == null) return false;
+        if (newItem == null) {
+            return false;
+        }
         int matchedItemIndex = this.indexOfByRecursiveBinarySearch(newItem);
 
         if (matchedItemIndex < 0) {
             this.add(newItem);
-            return true;
         } else {
             // TODO retrieve the matched item and
             //  replace the matched item in the list with the merger of the matched item and the newItem
 
             merger.apply(this.get(matchedItemIndex), newItem);
-            return true;
         }
+        return true;
     }
 }

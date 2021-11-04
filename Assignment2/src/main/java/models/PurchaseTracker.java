@@ -12,9 +12,6 @@ public class PurchaseTracker {
     private OrderedList<Purchase> purchases;      // the aggregated volumes of all purchases of all products across all branches
 
     public PurchaseTracker() {
-        // TODO initialize products and purchases with an empty ordered list which sorts items by barcode.
-        //  Use your generic implementation class OrderedArrayList
-
         products = new OrderedArrayList<>(Comparator.comparing(Product::getBarcode));
         purchases = new OrderedArrayList<>(Comparator.comparing(Purchase::getBarcode));
     }
@@ -70,13 +67,13 @@ public class PurchaseTracker {
             // TODO merge all purchases of all files and sub folders from the filesInDirectory list, recursively.
 
             for (File fileInDirectory : filesInDirectory) {
-                mergePurchasesFromFileRecursively(fileInDirectory.getAbsolutePath());
+                mergePurchasesFromFileRecursively(fileInDirectory.getPath());
             }
 
         } else if (file.getName().matches(PURCHASE_FILE_PATTERN)) {
             // the file is a regular file that matches the target pattern for raw purchase files
             // merge the content of this file into this.purchases
-            this.mergePurchasesFromFile(file.getAbsolutePath());
+            this.mergePurchasesFromFile(file.getPath());
         }
     }
 

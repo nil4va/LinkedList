@@ -21,24 +21,19 @@ public class Purchase {
      * or null if the textLine is corrupt or incomplete
      */
     public static Purchase fromLine(String textLine, List<Product> products) {
-
-        // TODO convert the information in the textLine to a new Purchase instance
-        //  use the products.indexOf to find the product that is associated with the barcode of the purchase
-
         String[] parts = textLine.split(", ");
         long barcode = Long.parseLong(parts[0]);
         int amount = Integer.parseInt(parts[1]);
 
-        // TODO validation parts to see if textLine is corrupt or incomplete
 
         Product foundProduct = null;
         for (Product product : products) {
             if (product.getBarcode() == barcode) {
                 foundProduct = product;
+                return new Purchase(foundProduct, amount);
             }
         }
-
-        return new Purchase(foundProduct, amount);
+        return null;
     }
 
     /**

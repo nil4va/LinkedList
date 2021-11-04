@@ -27,10 +27,6 @@ public class Product {
         String title = parts[1];
         double price = Double.parseDouble(parts[2]);
 
-//        if (barcode != null && title != null && price != null) {
-//            // TODO validation parts to see if textLine is corrupt or incomplete
-//        } else return null;
-
         return new Product(barcode, title, price);
     }
 

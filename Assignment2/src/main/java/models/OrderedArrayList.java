@@ -233,10 +233,10 @@ public class OrderedArrayList<E>
         if (matchedItemIndex < 0) {
             this.add(newItem);
         } else {
-            // TODO retrieve the matched item and
-            //  replace the matched item in the list with the merger of the matched item and the newItem
-
-            merger.apply(this.get(matchedItemIndex), newItem);
+            E combined = merger.apply(this.get(matchedItemIndex), newItem);
+            this.remove(matchedItemIndex);
+            this.add(combined);
+            this.sort();
         }
         return true;
     }

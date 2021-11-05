@@ -13,14 +13,13 @@ public class SupermarketStatisticsMain {
         purchaseTracker.importProductsFromVault("/products.txt");
         purchaseTracker.importPurchasesFromVault("/purchases");
 
-        Comparator<Purchase> ranker = (o1, o2) -> 0;
+        Comparator<Purchase> ranker = Comparator.comparing(Purchase::getCount);
 
         purchaseTracker.showTops(5, "worst sales volume",
                 ranker
-
         );
         purchaseTracker.showTops(5, "best sales revenue",
-                ranker
+                ranker.reversed()
         );
 
         purchaseTracker.showTotals();

@@ -133,15 +133,8 @@ public class PurchaseTracker {
         while (scanner.hasNext()) {
             // input another line with author information
             String line = scanner.nextLine();
-
-            // TODO convert the line to an instance of E
-
             E itemInstance = converter.apply(line);
-
-            // TODO add the item to the list of items
-
             items.add(itemInstance);
-
         }
         System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
     }
@@ -161,12 +154,10 @@ public class PurchaseTracker {
         // re-sort the accumulated purchases for efficient searching
         this.purchases.sort();
 
-        // TODO import all purchases from the specified file into the newPurchases list
         importItemsFromFile(newPurchases, filePath,
                 convert -> Purchase.fromLine(convert, products)
         );
 
-        // TODO merge all purchases from the newPurchases list into this.purchases
         for (Purchase newPurchase : newPurchases) {
             this.purchases.merge(newPurchase,
                     (purchase1, purchase2) -> new Purchase(purchase1.getProduct(),

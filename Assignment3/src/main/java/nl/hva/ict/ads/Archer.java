@@ -1,7 +1,5 @@
 package nl.hva.ict.ads;
 
-import java.util.Comparator;
-
 public class Archer {
     public static int MAX_ARROWS = 3;
     public static int MAX_ROUNDS = 10;
@@ -26,7 +24,8 @@ public class Archer {
         // TODO initialise the new archer
         //  generate and assign an new unique id
         //  initialise the scores of the archer
-        this.id = archerCreated++;
+        id = archerCreated;
+        archerCreated++;
         this.firstName = firstName;
         this.lastName = lastName;
     }

@@ -2,6 +2,7 @@ package nl.hva.ict.ads;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class SorterImpl<E> implements Sorter<E> {
 
@@ -16,7 +17,7 @@ public class SorterImpl<E> implements Sorter<E> {
      */
     public List<E> selInsSort(List<E> items, Comparator<E> comparator) {
         for (int i = 0; i < items.size(); i++) {
-            int temp = i;
+            int temp;
             for (int j = i; j < items.size(); j++) {
                 if (comparator.compare(items.get(j), items.get(i)) < 0) {
                     temp = j;
@@ -54,26 +55,37 @@ public class SorterImpl<E> implements Sorter<E> {
      * @return the items sorted in place
      */
     private void quickSortPart(List<E> items, int from, int to, Comparator<E> comparator) {
-        // TODO quick sort the sublist of items between index positions 'from' and 'to' inclusive
-        E pivot = items.get(from);
-        int lo = from + 1;
+        // Use random, to select a random Pivot
+        Random rand = new Random();
+        int randomPivotIndex = rand.nextInt((to - from) + 1) + from;
+        E pivot = items.get(randomPivotIndex);
+
+        int lo = from;
         int hi = to;
-        do {
-            while (comparator.compare(items.get(lo), pivot) < 0) lo++;
-            while (comparator.compare(pivot, items.get(hi)) < 0) hi--;
+
+        while (lo <= hi) {
+            while (comparator.compare(items.get(lo), pivot) < 0) {
+                lo++;
+            }
+            while (comparator.compare(pivot, items.get(hi)) < 0) {
+                hi--;
+            }
 
             if (lo <= hi) {
-                int temp = lo;
+                E temp = items.get(lo);
                 items.set(lo, items.get(hi));
-                items.set(hi, items.get(temp));
+                items.set(hi, temp);
                 lo++;
                 hi--;
             }
-        } while (lo <= hi);
-        items.set(from, items.get(hi));
-        items.set(hi, pivot);
+        }
 
-        this.quickSortPart(items, 0, items.size() - 1, comparator);
+        if (from < hi) {
+            this.quickSortPart(items, from, hi, comparator);
+        }
+        if (lo < to) {
+            this.quickSortPart(items, lo, to, comparator);
+        }
     }
 
     /**
@@ -91,8 +103,11 @@ public class SorterImpl<E> implements Sorter<E> {
      */
     public List<E> topsHeapSort(int numTops, List<E> items, Comparator<E> comparator) {
         // check 0 < numTops <= items.size()
-        if (numTops <= 0) return items;
-        else if (numTops > items.size()) return quickSort(items, comparator);
+        if (numTops <= 0) {
+            return items;
+        } else if (numTops > items.size()) {
+            return quickSort(items, comparator);
+        }
 
         // the lead collection of numTops items will be organised into a (zero-based) heap structure
         // in the first numTops list positions using the reverseComparator for the heap condition.
@@ -133,14 +148,14 @@ public class SorterImpl<E> implements Sorter<E> {
 
             // TODO swap item[0] and item[i];
             //  this moves item[0] to its designated position
-
+            swapItems(0, i, items);
 
             // TODO the new root may have violated the heap condition
             //  repair the heap condition on the remaining heap of size i
-
+            heapSwim(items, i -1, reverseComparator);
         }
-        // alternatively we can realise full ordening with a partial quicksort:
-        // quickSortPart(items, 0, numTops-1, comparator);
+        // alternatively we can realise full ordering with a partial quicksort:
+        quickSortPart(items, 0, numTops-1, comparator);
 
         return items;
     }
@@ -160,6 +175,12 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
 
+        // TODO: Might not work at all D:
+        for (int i = heapSize - 1; i > 0; i--) {
+            if (comparator.compare(items.get((i-1)/2), items.get(i)) > 0) {
+                swapItems(i, ((i-1)/2), items);
+            }
+        }
     }
 
     /**
@@ -177,5 +198,17 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO sink items[0] down the heap until
         //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
 
+    }
+
+    /**
+     * Swap two items with each other.
+     * @param i
+     * @param j
+     * @param items
+     */
+    private void swapItems(int i, int j, List<E> items) {
+        E tempZeroIndexedItem = items.get(i);
+        items.set(i, items.get(j));
+        items.set(j, tempZeroIndexedItem);
     }
 }

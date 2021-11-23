@@ -4,7 +4,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,19 +26,19 @@ public class ArcherTest {
     @BeforeEach
     void setup() {
         archer1 = new Archer("Sjef van den", "Berg");
-        scores1 = new int[]{10,8,0};
+        scores1 = new int[]{10, 8, 0};
         archer2 = new Archer("Nico", "Tromp");
-        scores2 = new int[]{9,9,0};
+        scores2 = new int[]{9, 9, 0};
         archer3 = new Archer("Gabriëla", "Schloesser");
-        scores3 = new int[]{9,6,3};
+        scores3 = new int[]{9, 6, 3};
         archer4 = new Archer("Steve", "Wijler");
-        scores4 = new int[]{5,5,5};
+        scores4 = new int[]{5, 5, 5};
     }
 
     @Test
     void archerIdsIncreaseCorrectly() {
-        assertEquals(archer2.getId(), archer1.getId()+ 1);
-        assertEquals(archer3.getId(), archer2.getId()+ 1);
+        assertEquals(archer2.getId(), archer1.getId() + 1);
+        assertEquals(archer3.getId(), archer2.getId() + 1);
     }
 
     @Test
@@ -70,13 +73,13 @@ public class ArcherTest {
             archer1.registerScoreForRound(round, scores1);
 
         }
-        archer1.registerScoreForRound(1,scores2);
+        archer1.registerScoreForRound(1, scores2);
         assertEquals(180, archer1.getTotalScore());
-        archer1.registerScoreForRound(2,scores4);
+        archer1.registerScoreForRound(2, scores4);
         assertEquals(177, archer1.getTotalScore());
-        archer1.registerScoreForRound(10,scores4);
+        archer1.registerScoreForRound(10, scores4);
         assertEquals(174, archer1.getTotalScore());
-        archer1.registerScoreForRound(2,scores2);
+        archer1.registerScoreForRound(2, scores2);
         assertEquals(177, archer1.getTotalScore());
     }
 
@@ -119,5 +122,27 @@ public class ArcherTest {
             archer2.registerScoreForRound(round, scores2);
         }
         assertTrue(scoringScheme.compare(archer1, archer2) < 0);
+    }
+
+    @Test
+    void SortingExecutionTimes() {
+        SorterImpl<Integer> sorter = new SorterImpl<>();
+        int maxItems = 999999999;
+        List<Integer> numberList = new ArrayList<>();
+
+        for (int itemsSize = 100; itemsSize < maxItems; itemsSize = itemsSize * 2) {
+            for (int i = 0; i < itemsSize; i++) {
+                numberList.add(i);
+            }
+
+            Collections.shuffle(numberList);
+
+            long start = System.currentTimeMillis();
+//            sorter.quickSort(numberList, Integer::compareTo);
+            sorter.selInsSort(numberList, Integer::compareTo);
+            long finish = System.currentTimeMillis();
+
+            System.out.println(itemsSize + " items sorted in " + (finish - start) + " ms");
+        }
     }
 }
